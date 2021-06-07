@@ -1,0 +1,53 @@
+package ATMCard
+
+    context ATMCard::getBankName()
+    pre: true
+    post: bankName
+
+    context ATMCard::insertPIN()
+    pre: true
+    post: cardPIN
+
+endpackage
+
+
+package EDC
+
+    context EDC::detectCard(CheckCard : atmCard)
+    pre: true
+    post: self.atmCard = atmCard -- Initialization atmCard
+
+    context EDC::process()
+    pre: atmCard->notEmpty()
+    post: if self.atmCard->notEmpty() 
+        then atmCard->insertPIN() and
+            print bill.setOutput() and
+            print 'Memproses pembayaran...'
+        else print 'Kartu ATM tidak dapat diproses!' 
+        endif
+
+    context EDC::getTransactionNum()
+    pre: true
+    post: transactionNum -- generate random number for transaction code
+
+    context EDC::setOutput()
+    pre: atmCard->notEmpty()
+    post: print self.transactionNum()
+
+endpackage
+
+
+package BillPrinter
+
+    context BillPrinter::detectPayment(PrintOutput : bill)
+    pre: true
+    post: self.bill = bill
+
+    context BillPrinter::printBill()
+    pre: bill->notEmpty()
+    post: if self.bill->notEmpty()
+        then print bill.setOutput() 
+        else print 'Error!' 
+        endif
+
+endpackage
